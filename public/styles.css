@@ -1,0 +1,118 @@
+body {
+    background-color: #f8f9fa;
+}
+
+.quiz-card {
+    margin-top: 50px;
+    box-shadow: 0 4px 8px 0 rgba(0, 0, 0, 0.2);
+    border-radius: 10px;
+}
+
+.card-header {
+    background-color: grey;
+    color: white;
+    border-top-left-radius: 10px;
+    border-top-right-radius: 10px;
+}
+
+.progress-bar {
+    background-color: grey;
+}
+
+h5 {
+    margin-top: 20px;
+}
+
+.btn-primary {
+    background-color: grey;
+    border-color: grey;
+    transition: background-color 0.3s, border-color 0.3s;
+}
+
+.btn-primary:hover {
+    background-color: grey;
+    border-color: grey;
+}
+
+.btn-success {
+    background-color: #28a745;
+    border-color: #28a745;
+    transition: background-color 0.3s, border-color 0.3s;
+}
+
+.btn-success:hover {
+    background-color: #218838;
+    border-color: #1e7e34;
+}
+.choices
+{
+    margin: 20px;
+    color: black;
+    background-color: white;
+}
+.selected
+{
+    background-color: grey;
+    border-color: grey;
+    color: white;
+}
+.unselected
+{
+    color: black;
+    background-color: white;
+}
+.result
+{
+    display:none;
+    padding:10px; 
+    margin: 5px; 
+    color: white;
+    background-color: gray;
+}
+
+/* ===============NAVBAR====================== */
+.navbar-custom {
+    background-color: #343a40;
+}
+.navbar-custom .navbar-brand, 
+.navbar-custom .nav-link {
+    color: #ffffff;
+}
+.navbar-custom .nav-link:hover {
+    color: #d4d4d4;
+}
+/* ====================REGISTER=========================== */
+.register-container {
+    max-width: 500px;
+    margin: 50px auto;
+    padding: 20px;
+    background: white;
+    border-radius: 10px;
+    box-shadow: 0px 0px 10px 0px rgba(0,0,0,0.1);
+}
+.form-group.required .control-label:after {
+    content:"*";
+    color:red;
+}
+
+/* ======================INDEX================================== */
+.home-btn1, .home-btn2
+{
+    width: 40%;
+    padding: 20px 30px 20px 30px;
+}
+
+
+/* ==================Create Quiz================ */
+.quiz-container {
+    max-width: 800px;
+    margin: 50px auto;
+    padding: 20px;
+    background: white;
+    border-radius: 10px;
+    box-shadow: 0px 0px 10px 0px rgba(0,0,0,0.1);
+}
+.form-group.required .control-label:after {
+    content: "*";
+    color: red;
+}
