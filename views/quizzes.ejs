@@ -1,0 +1,19 @@
+<div class="container mt-5">
+  <h4>List of Quizzes Available:</h4>
+  <table class="table">
+      <thead>
+          <tr>
+              <th>Quiz Name</th>
+              <th>Action</th>
+          </tr>
+      </thead>
+      <tbody>
+          <% quizzes.forEach(quiz => { %>
+              <tr>
+                  <td><%= quiz.quizName %></td>
+                  <td><a href="/quizzes/<%= quiz._id %>" class="btn btn-primary">Start Quiz</a></td>
+              </tr>
+          <% }); %>
+      </tbody>
+  </table>
+</div>

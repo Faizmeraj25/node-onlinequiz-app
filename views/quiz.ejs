@@ -1,0 +1,107 @@
+<link rel="stylesheet" href="styles.css">
+    <div class="container mt-5">
+        <div class="card quiz-card">
+            <div class="card-header text-center">
+                <h2>Online Quiz</h2>
+                <div class="progress mt-3">
+                    <div class="progress-bar" role="progressbar" style="width: 0%;" id="progressBar"></div>
+                </div>
+            </div>
+            <div class="card-body">
+                <h2 class="question">Question </h2>
+                <div class="choice-container">
+                    <div><button class="btn btn-primary choices unselected" id="choice-1">A</button></div>
+                    <div><button class="btn btn-primary choices unselected" id="choice-2">B</button></div>
+                    <div><button class="btn btn-primary choices unselected" id="choice-3">C</button></div>
+                    <div><button class="btn btn-primary choices unselected" id="choice-4">D</button></div>
+                </div>
+                <div class="result"></div>
+                <button type="button" class="btn btn-success submit">Next</button>
+            </div>
+        </div>
+    </div>
+    <script>
+        let currentQuestion = 0;
+       
+var questions1 = []; 
+const quiz = JSON.parse(`<%- JSON.stringify(quiz)%>`);
+console.log('quiz', quiz);
+quiz.questions.forEach(quest =>{
+    let q = []; 
+    console.log(quest);
+    q.push(quest.questionText);
+    quest.options.forEach(op =>{
+        q.push(op.optionText); 
+    });
+    q.push(quest.correctOption);
+    questions1.push(q); 
+});
+const questions = questions1;
+const showQuestion = () => {
+    let question = questions[currentQuestion]; 
+    console.log(question)
+    document.querySelector('.question').innerHTML = question[0]; 
+    document.querySelectorAll('.choices').forEach((e, ind)=>{
+        e.innerHTML = question[ind+1]
+    })
+    currentQuestion++; 
+};
+showQuestion();
+    
+    const nextQuestion = ()=>{
+        showQuestion(); 
+        updateProgressBar(currentQuestion); 
+    }
+    let userChoice = [];
+    document.querySelectorAll('.choices').forEach( (e, ind)=>{
+        e.addEventListener('click', ()=>
+        {
+            userChoice[currentQuestion-1] = e.id; 
+            console.log(userChoice);
+            document.querySelectorAll('.choices').forEach( (e, ind) =>{
+                if(parseInt(userChoice[currentQuestion-1].split('-')[1])-1 == ind)
+                {
+                    e.classList.remove('unselected');
+                    e.classList.add('selected');
+                }
+                else
+                {
+                    e.classList.remove('selected');
+                    e.classList.add('unselected');
+                }  
+            })
+        })
+    })
+    const evaluate = ()=>{
+        let correct = 0; 
+        userChoice.forEach((item, ind)=>{
+            if(parseInt(item.split('-')[1]) == (questions[ind][5]))
+                correct++; 
+        });
+        console.log(correct);
+        document.querySelector('.result').innerHTML = `The number of correct answers are ${correct} out of ${questions.length} !`; 
+        document.querySelector('.result').style.display = 'block';
+    }
+    var submit = document.querySelector('.submit')
+    console.log(submit);
+    submit.addEventListener('click', ()=>{
+        document.querySelectorAll('.choices').forEach( (e, ind) =>{
+            e.classList.remove('selected');
+            e.classList.add('unselected')
+        })
+        if(currentQuestion == questions.length-1)
+            submit.innerHTML = 'Submit'
+        if(currentQuestion < questions.length)
+            nextQuestion();
+        else 
+            evaluate(); 
+
+    })
+
+        function updateProgressBar(index) {
+            const progressBar = document.getElementById('progressBar');
+            const percentage = ((index + 1) / questions.length) * 100;
+            progressBar.style.width = percentage + '%';
+        }
+    </script>
+
