@@ -16,6 +16,7 @@
                     <div><button class="btn btn-primary choices unselected" id="choice-4">D</button></div>
                 </div>
                 <div class="result"></div>
+                <button type="button" class="btn btn-success prev"  disabled>Prev</button>
                 <button type="button" class="btn btn-success submit">Next</button>
             </div>
         </div>
@@ -26,6 +27,7 @@
 var questions1 = []; 
 const quiz = JSON.parse(`<%- JSON.stringify(quiz)%>`);
 console.log('quiz', quiz);
+const numQuestions = quiz.numberOfQuestions; 
 quiz.questions.forEach(quest =>{
     let q = []; 
     console.log(quest);
@@ -37,29 +39,63 @@ quiz.questions.forEach(quest =>{
     questions1.push(q); 
 });
 const questions = questions1;
+let userChoice = [];
+
 const showQuestion = () => {
     let question = questions[currentQuestion]; 
     console.log(question)
-    document.querySelector('.question').innerHTML = question[0]; 
+    document.querySelector('.question').innerHTML = `Q${currentQuestion+1}: ` + question[0]; 
     document.querySelectorAll('.choices').forEach((e, ind)=>{
-        e.innerHTML = question[ind+1]
-    })
-    currentQuestion++; 
-};
-showQuestion();
-    
-    const nextQuestion = ()=>{
-        showQuestion(); 
-        updateProgressBar(currentQuestion); 
+        e.innerHTML = question[ind+1]; 
+    });
+    // to show the option selected.
+    if(userChoice[currentQuestion])
+    {
+        document.querySelectorAll('.choices').forEach( (e, ind) =>{
+            if(parseInt(userChoice[currentQuestion].split('-')[1])-1 == ind)
+            {
+                e.classList.remove('unselected');
+                e.classList.add('selected');
+            }
+            else
+            {
+                e.classList.remove('selected');
+                e.classList.add('unselected');
+            }  
+        });
     }
-    let userChoice = [];
+    const prev = document.querySelector('.prev');
+    if(currentQuestion == 0)
+        prev.disabled = true; 
+    else
+        prev.disabled = false; 
+    var submit = document.querySelector('.submit');
+    if(currentQuestion == questions.length-1)
+        submit.innerHTML = 'Submit'; 
+    else
+        submit.innerHTML = 'Next'; 
+
+    updateProgressBar(currentQuestion); 
+
+};
+const nextQuestion = ()=>{
+    currentQuestion++; 
+    showQuestion(); 
+};
+const prevQuestion = ()=>{
+    currentQuestion--; 
+    showQuestion(); 
+};
+    showQuestion();
+    
+
     document.querySelectorAll('.choices').forEach( (e, ind)=>{
         e.addEventListener('click', ()=>
         {
-            userChoice[currentQuestion-1] = e.id; 
+            userChoice[currentQuestion] = e.id; 
             console.log(userChoice);
             document.querySelectorAll('.choices').forEach( (e, ind) =>{
-                if(parseInt(userChoice[currentQuestion-1].split('-')[1])-1 == ind)
+                if(parseInt(userChoice[currentQuestion].split('-')[1])-1 == ind)
                 {
                     e.classList.remove('unselected');
                     e.classList.add('selected');
@@ -81,27 +117,46 @@ showQuestion();
         console.log(correct);
         document.querySelector('.result').innerHTML = `The number of correct answers are ${correct} out of ${questions.length} !`; 
         document.querySelector('.result').style.display = 'block';
-    }
-    var submit = document.querySelector('.submit')
+    };
+
+    //Event Listener for prev button
+    var prev = document.querySelector('.prev'); 
+    prev.addEventListener('click', ()=>{
+        document.querySelectorAll('.choices').forEach( (e, ind) =>{
+            e.classList.remove('selected');
+            e.classList.add('unselected')
+        }); 
+        if(currentQuestion >= 0)
+            prevQuestion(); 
+    });
+
+    // Event Listerner for next button.
+    var submit = document.querySelector('.submit');
     console.log(submit);
+
     submit.addEventListener('click', ()=>{
         document.querySelectorAll('.choices').forEach( (e, ind) =>{
             e.classList.remove('selected');
             e.classList.add('unselected')
-        })
-        if(currentQuestion == questions.length-1)
-            submit.innerHTML = 'Submit'
-        if(currentQuestion < questions.length)
+        });
+       
+        if(currentQuestion < questions.length-1)
             nextQuestion();
         else 
-            evaluate(); 
+            {
+                evaluate(); 
+                submit.disabled = true;
+                prev.disabled = true; 
+            }
 
-    })
+    });
+    
 
         function updateProgressBar(index) {
             const progressBar = document.getElementById('progressBar');
             const percentage = ((index + 1) / questions.length) * 100;
             progressBar.style.width = percentage + '%';
+            progressBar.innerText = `${index+1}/${numQuestions}`;
         }
     </script>
 
