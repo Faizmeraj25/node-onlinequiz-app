@@ -1,18 +1,76 @@
 <div class="container quiz-container">
     <h2 class="text-center">Create Quiz</h2>
+    <% if(locals.errors){ %> <% errors.forEach(function(error) { %>
+        <div class="alert alert-warning alert-dismissible fade show" role="alert">
+          <%= error.msg %>
+          <button type="button" class="close" data-dismiss="alert" aria-label="Close">
+            <span aria-hidden="true">&times;</span>
+          </button>
+        </div>
+        <% }); %> 
+    <% } %>
+    
+    <% if(error_msg != ''){ %>
+        <div class="alert alert-danger alert-dismissible fade show" role="alert">
+          <%= error_msg %>
+          <button type="button" class="close" data-dismiss="alert" aria-label="Close">
+            <span aria-hidden="true">&times;</span>
+          </button>
+        </div>
+    <% } %>
+    
+    
+    <% if(success_msg != ''){ %>
+        <div class="alert alert-success alert-dismissible fade show" role="alert">
+        <%= success_msg %>
+        <button type="button" class="close" data-dismiss="alert" aria-label="Close">
+            <span aria-hidden="true">&times;</span>
+        </button>
+        </div>
+    <% } %> 
     <form id="quizForm" action = '/create-quiz' method="POST">
         <div class="form-group required">
             <label for="quizName" class="control-label">Quiz Name</label>
-            <input type="text" class="form-control" id="quizName" name= "quizName" placeholder="Enter name of the Quiz" >
+            <input type="text" class="form-control" id="quizName" name= "quizName" placeholder="Enter name of the Quiz" value = "<%= typeof quizName != 'undefined'  ? quizName: '' %>">
         </div>
         <div class="form-group required">
             <label for="numQuestions" class="control-label">Number of Questions</label>
-            <input type="number" class="form-control" id="numQuestions" name="numQuestions" placeholder="Enter number of questions" required min="1">
+            <input type="number" class="form-control" id="numQuestions" name="numQuestions" placeholder="Enter number of questions"  min="1" value = "<%= typeof numQuestions != 'undefined'  ? numQuestions: '' %>">
         </div>
         <button type="button" class="btn btn-primary btn-block" onclick="generateQuestions()">Generate Questions</button>
         <div id="questionsContainer" class="mt-4"></div>
         <button type="submit" class="btn btn-success btn-block mt-4">Create Quiz</button>
     </form>
 </div>
+<script>
+   
+     function generateQuestions() {
+            const numQuestions = document.getElementById('numQuestions').value;
+            const questionsContainer = document.getElementById('questionsContainer');
+            questionsContainer.innerHTML = '';
+
+            for (let i = 1; i <= numQuestions; i++) {
+                const questionHTML = `
+                    <div class="form-group required">
+                        <label for="question${i}" class="control-label">Question ${i}</label>
+                        <input type="text" class="form-control" id="question${i}" name="question${i}" placeholder="Enter question ${i}" required>
+                    </div>
+                    <div class="form-group required">
+                        <label class="control-label">Options for Question ${i}</label>
+                        <input type="text" class="form-control mb-2" id="option${i}_1" name="option${i}_1" placeholder="Option 1" required>
+                        <input type="text" class="form-control mb-2" id="option${i}_2" name="option${i}_2" placeholder="Option 2" required>
+                        <input type="text" class="form-control mb-2" id="option${i}_3" name="option${i}_3" placeholder="Option 3" required>
+                        <input type="text" class="form-control mb-2" id="option${i}_4" name="option${i}_4" placeholder="Option 4" required>
+                    </div>
+                    <div class="form-group required">
+                        <label for="correctOption${i}" class="control-label">Correct Option for Question ${i}</label>
+                        <input type="number" class="form-control" id="correctOption${i}" name="correctOption${i}" placeholder="Enter correct option number (1-4)" required min="1" max="4">
+                    </div>
+                    <hr>
+                `;
+                questionsContainer.insertAdjacentHTML('beforeend', questionHTML);
+            }
+        }
+</script>
 
 
