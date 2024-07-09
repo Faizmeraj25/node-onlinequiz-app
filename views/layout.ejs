@@ -31,12 +31,18 @@
                 <li class="nav-item">
                     <a class="nav-link" href="#">Contact</a>
                 </li>
+                <% if(isAuthenticated){ %>
+                    <li class="nav-item">
+                        <a class="nav-link btn btn-primary text-white" href="/logout">Logout</a>
+                    </li> 
+                <% } else { %>
                 <li class="nav-item">
-                    <a class="nav-link btn btn-primary text-white" href="register.html">Sign Up</a>
+                    <a class="nav-link btn btn-primary text-white" href="/register">Sign Up</a>
                 </li>
                 <li class="nav-item">
-                    <a class="nav-link btn btn-secondary text-white" href="login.html">Login</a>
+                    <a class="nav-link btn btn-secondary text-white" href="/login">Login</a>
                 </li>
+                <% } %>
             </ul>
         </div>
     </nav>

@@ -5,18 +5,33 @@ const Quiz = require('./models/quiz')
 const bodyParser = require('body-parser'); 
 const session = require('express-session'); 
 const flash = require('connect-flash'); 
+const bcrypt = require('bcryptjs');
+const passport = require('passport'); 
 const app = express(); 
 
+//Load User model
+const User = require('./models/User'); 
+
+//To prevent to access dashboard without login 
+const {forwardAuthenticated, ensureAuthenticated} = require('./config/auth')
+
+//passport config
+require('./config/passport')(passport);
+
+//Database config
 const dB = require('./config/keys').mongoURI;
+
 //EJS
 app.use(expressLayouts);
 app.set('view engine', 'ejs');
+
 //Server Static files
 app.use(express.static('public'));
 
 // Express body parser
 app.use(bodyParser.json());
 app.use(express.urlencoded({ extended: true }));
+
 // Express session
 app.use(
     session({
@@ -25,31 +40,35 @@ app.use(
       saveUninitialized: true
     })
   );
+
+//Passport 
+app.use(passport.initialize());
+app.use(passport.session());
+
 //To display messages. 
 app.use(flash()); 
-
 
 //Connect to MongoDB
 mongoose.connect(dB)
     .then(() => console.log('Connected to MongoDB'))
     .catch(error => console.error('Error connecting to MongoDB:', error));
 
-
 // Global variables
 app.use(function(req, res, next) {
     res.locals.success_msg = req.flash('success_msg');
     res.locals.error_msg = req.flash('error_msg');
     res.locals.error = req.flash('error');
+    res.locals.isAuthenticated = req.isAuthenticated(); 
+    res.locals.user = req.user || null; 
     next();
   });
 
-
 //Routers
-app.get('/', (req, res)=>{
+app.get('/', forwardAuthenticated,(req, res)=>{
     res.render('welcome'); 
 })
 
-app.get('/create-quiz', (req, res)=>{
+app.get('/create-quiz', ensureAuthenticated,(req, res)=>{
     res.render('create-quiz')
 });
 app.post('/create-quiz',  async(req, res)=>{
@@ -101,7 +120,7 @@ app.post('/create-quiz',  async(req, res)=>{
         }
     }
 }); 
-app.get('/quizzes', async (req, res)=>{
+app.get('/quizzes', ensureAuthenticated,async (req, res)=>{
         try {
             const quizzes = await Quiz.find();
             // res.status(200).json(quizzes);
@@ -112,7 +131,7 @@ app.get('/quizzes', async (req, res)=>{
         }
 });
 // Fetch a specific quiz by ID
-app.get('/quizzes/:id', async (req, res) => {
+app.get('/quizzes/:id', ensureAuthenticated, async (req, res) => {
     try {
         const quiz = await Quiz.findById(req.params.id);
         if (!quiz) {
@@ -127,6 +146,111 @@ app.get('/quizzes/:id', async (req, res) => {
         res.status(500).json({ error: error.message });
     }
 });
+//Get Login 
+app.get('/login', forwardAuthenticated, (req, res)=>{
+    res.render('login'); 
+}); 
+//Get Register 
+app.get('/register', forwardAuthenticated, (req, res)=>{
+    res.render('register'); 
+}); 
+//Post Register
+app.post('/register',  (req, res) => {
+    console.log('req.body', req.body);
+    const { username, email, password, confirmPassword } =  req.body;
+    let errors = [];
+  
+    if (!username || !email || !password || !confirmPassword) {
+      errors.push({ msg: 'Please enter all fields' });
+    }
+  
+    if (password != confirmPassword) {
+      errors.push({ msg: 'Passwords do not match' });
+    }
+  
+    if (password.length < 6) {
+      errors.push({ msg: 'Password must be at least 6 characters' });
+    }
+  
+    if (errors.length > 0) {
+      res.render('register', {
+        errors,
+        username,
+        email,
+        password,
+        confirmPassword
+      });
+    } else {
+      User.findOne({ email: email }).then(user => {
+        if (user) {
+          errors.push({ msg: 'Email already exists' });
+          res.render('register', {
+            errors,
+            username,
+            email,
+            password,
+            confirmPassword
+          });
+        } else {
+          const newUser = new User({
+            username,
+            email,
+            password
+          });
+  
+          bcrypt.genSalt(10, (err, salt) => {
+            bcrypt.hash(newUser.password, salt, (err, hash) => {
+              if (err) throw err;
+              newUser.password = hash;
+              newUser
+                .save()
+                .then(user => {
+                  req.flash(
+                    'success_msg',
+                    'You are now registered. Please Login.'
+                  );
+                  res.redirect('/login');
+                })
+                .catch(err => console.log(err));
+            });
+          });
+            console.log('newUser', newUser); 
+        }
+      });
+    }
+  });
+  
+//Post Login 
+app.post('/login', (req, res, next) => {
+    console.log('req.body', req.body);
+    passport.authenticate('local', {
+      successRedirect: '/dashboard',
+      failureRedirect: '/login',
+      failureFlash: true
+    })(req, res, next);
+  });
+
+//Get Dashboard
+app.get('/dashboard', ensureAuthenticated, (req, res)=>{
+    res.render('dashboard'); 
+})
+  
+app.get('/login',forwardAuthenticated , (req, res) =>{
+    res.render('login');
+});
+// Logout
+app.get('/logout', (req, res, next) => {
+    req.logout((err) => {
+      if (err) {
+        return next(err);
+      }
+      req.flash('success_msg', 'You are logged out');
+      res.redirect('/login');
+    });
+  });
+  
+
+
 const PORT = process.env.PORT || 3000; 
 
 app.listen(PORT, console.log(`Server is running on PORT ${PORT}`));   
