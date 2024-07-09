@@ -146,6 +146,29 @@ app.get('/quizzes/:id', ensureAuthenticated, async (req, res) => {
         res.status(500).json({ error: error.message });
     }
 });
+//Post result page
+app.post('/result', (req, res) => {
+  const { correct, totalQuestions, unanswered, wrong } = req.body;
+  console.log('post result', correct, totalQuestions, unanswered, wrong);
+  res.json({
+      correct,
+      totalQuestions,
+      unanswered, 
+      wrong
+  });
+});
+
+app.get('/result', (req, res) => {
+  const { correct, totalQuestions, unanswered, wrong } = req.query;
+  console.log('get result', correct, totalQuestions, unanswered, wrong);
+  res.render('result', {
+      correct,
+      totalQuestions,
+      unanswered, 
+      wrong
+  });
+});
+
 //Get Login 
 app.get('/login', forwardAuthenticated, (req, res)=>{
     res.render('login'); 

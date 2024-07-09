@@ -16,8 +16,12 @@
                     <div><button class="btn btn-primary choices unselected" id="choice-4">D</button></div>
                 </div>
                 <div class="result"></div>
+                <div></div>
                 <button type="button" class="btn btn-success prev"  disabled>Prev</button>
                 <button type="button" class="btn btn-success submit">Next</button>
+                <div class="card">
+                    <a href="#" class="btn btn-info test-summary" style="display:none;">Test Summary</a>
+                </div>
             </div>
         </div>
     </div>
@@ -107,17 +111,63 @@ const prevQuestion = ()=>{
                 }  
             })
         })
-    })
-    const evaluate = ()=>{
-        let correct = 0; 
-        userChoice.forEach((item, ind)=>{
-            if(parseInt(item.split('-')[1]) == (questions[ind][5]))
-                correct++; 
-        });
-        console.log(correct);
-        document.querySelector('.result').innerHTML = `The number of correct answers are ${correct} out of ${questions.length} !`; 
+    });
+
+    let correct = 0;
+    let unanswered = 0;
+    let wrong = 0; 
+    let evaluationResults = {};
+    const evaluate = () => {
+
+    userChoice.forEach((item, ind) => {
+        if (parseInt(item.split('-')[1]) == (questions[ind][5])) {
+            correct++;
+        } else if(parseInt(item.split('-')[1]) != (questions[ind][5]))
+            wrong++; 
+    });
+    unanswered = numQuestions - correct - wrong; 
+    document.querySelector('.result').innerHTML = `The number of correct answers are ${correct} out of ${questions.length} ! <a href='/result' onclick="summary()">Test Summary</a>`; 
+    document.querySelector('.result').style.display = 'block';
+    const totalQuestions = questions.length;
+
+        evaluationResults = {
+            correctAnswers: correct,
+            totalQuestions: totalQuestions,
+            unanswered: unanswered, 
+            wrong: wrong
+        };
+
+        console.log('Evaluation Results:', evaluationResults);
+
+        const summaryLink = document.querySelector('.test-summary');
+        summaryLink.href = `/result?correct=${evaluationResults.correctAnswers}&totalQuestions=${evaluationResults.totalQuestions}&unanswered=${evaluationResults.unanswered}&wrong=${evaluationResults.wrong}`;
+        summaryLink.style.display = 'block';
+
+        document.querySelector('.result').innerHTML = `You have completed the quiz. Click "Test Summary" to view your results.`;
         document.querySelector('.result').style.display = 'block';
-    };
+};
+const summary = ()=>{
+    fetch('/result', {
+        method: 'POST',
+        headers: {
+            'Content-Type': 'application/json'
+        },
+        body: JSON.stringify({
+            correctAnswers: correct,
+            totalQuestions: numQuestions,
+            unanswered: unanswered
+        })
+    })
+    .then(response => {
+        if(!response.ok){
+            throw new Error('Network response was not ok');
+        }
+        return response.json()
+    })
+    
+    .catch(error => console.log('Error:', error));
+}; 
+
 
     //Event Listener for prev button
     var prev = document.querySelector('.prev'); 

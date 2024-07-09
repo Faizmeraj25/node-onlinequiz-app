@@ -1,0 +1,15 @@
+<div class="container mt-5">
+    <div class="card">
+        <div class="card-header text-center">
+            <h2>Quiz Results</h2>
+        </div>
+        <div class="card-body text-center">
+            <p><strong>Correct Answers:</strong> <%= correct %> </p>
+            <p><strong>Incorrect Answers:</strong> <%= wrong %></p>
+            <p><strong>Unanswered Questions:</strong> <%= unanswered %></p>
+            <p><strong>Total Questions:</strong> <%= totalQuestions %></p>
+
+            <a href="/quizzes" class="btn btn-primary">Take Another Quiz</a>
+        </div>
+    </div>
+</div>
