@@ -113,8 +113,9 @@ h5 {
 /* ======================INDEX================================== */
 .home-btn1, .home-btn2
 {
-    width: 40%;
-    padding: 20px 30px 20px 30px;
+    width: 72%;
+    padding: 26px 10px;
+    overflow: hidden;
 }
 
 

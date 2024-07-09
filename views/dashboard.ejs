@@ -1,34 +1,45 @@
-<% if(locals.errors){ %> <% errors.forEach(function(error) { %>
-    <div class="alert alert-warning alert-dismissible fade show" role="alert">
-      <%= error.msg %>
-      <button type="button" class="close" data-dismiss="alert" aria-label="Close">
-        <span aria-hidden="true">&times;</span>
-      </button>
-    </div>
-    <% }); %> 
-<% } %>
+<div class="container mt-5">
+  <% if (locals.errors) { %> 
+      <% errors.forEach(function(error) { %>
+          <div class="alert alert-warning alert-dismissible fade show" role="alert">
+              <%= error.msg %>
+              <button type="button" class="close" data-dismiss="alert" aria-label="Close">
+                  <span aria-hidden="true">&times;</span>
+              </button>
+          </div>
+      <% }); %> 
+  <% } %>
 
-<% if(error_msg != ''){ %>
-    <div class="alert alert-danger alert-dismissible fade show" role="alert">
-      <%= error_msg %>
-      <button type="button" class="close" data-dismiss="alert" aria-label="Close">
-        <span aria-hidden="true">&times;</span>
-      </button>
-    </div>
-<% } %>
+  <% if (error_msg != '') { %>
+      <div class="alert alert-danger alert-dismissible fade show" role="alert">
+          <%= error_msg %>
+          <button type="button" class="close" data-dismiss="alert" aria-label="Close">
+              <span aria-hidden="true">&times;</span>
+          </button>
+      </div>
+  <% } %>
 
+  <% if (success_msg != '') { %>
+      <div class="alert alert-success alert-dismissible fade show" role="alert">
+          <%= success_msg %>
+          <button type="button" class="close" data-dismiss="alert" aria-label="Close">
+              <span aria-hidden="true">&times;</span>
+          </button>
+      </div>
+  <% } %> 
 
-<% if(success_msg != ''){ %>
-    <div class="alert alert-success alert-dismissible fade show" role="alert">
-    <%= success_msg %>
-    <button type="button" class="close" data-dismiss="alert" aria-label="Close">
-        <span aria-hidden="true">&times;</span>
-    </button>
-    </div>
-<% } %> 
-
-<h4>Welcome, <%= user.username %>!!</h4>
-<div class="d-grid gap-2 col-6 mx-auto">
-    <button class="btn btn-primary choices home-btn1" type="button" onclick="redirectToCreate()" data-mdb-ripple-init>Create Quiz</button>
-    <button class="btn btn-primary choices home-btn2" type="button" onclick="redirectToQuizzes()" data-mdb-ripple-init>Take Existing Quiz</button>
+  <div class="card text-center shadow-lg p-3 mb-5 bg-white rounded">
+      <div class="card-body">
+          <h4 class="card-title">Welcome, <%= user.username %>!!</h4>
+          <p class="card-text">Choose an option below to get started:</p>
+          <div class="d-grid gap-2 col-6 mx-auto">
+              <button class="btn btn-primary choices home-btn1 mb-2" type="button" onclick="redirectToCreate()" data-mdb-ripple-init>
+                  <i class="fas fa-plus-circle"></i> Create Quiz
+              </button>
+              <button class="btn btn-primary choices home-btn2" type="button" onclick="redirectToQuizzes()" data-mdb-ripple-init>
+                  <i class="fas fa-clipboard-list"></i> Take Existing Quiz
+              </button>
+          </div>
+      </div>
+  </div>
 </div>
