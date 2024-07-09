@@ -20,7 +20,7 @@ const {forwardAuthenticated, ensureAuthenticated} = require('./config/auth')
 require('./config/passport')(passport);
 
 //Database config
-const dB = process.env.MONGO_URI;
+const dB = process.env.MONGO_URI || 'mongodb+srv://faizmeraj25:'+ encodeURIComponent('Faiz@0786') + '@cluster0.tc3rdts.mongodb.net/?retryWrites=true&w=majority&appName=Cluster0';
 
 //EJS
 app.use(expressLayouts);
