@@ -20,7 +20,7 @@ const {forwardAuthenticated, ensureAuthenticated} = require('./config/auth')
 require('./config/passport')(passport);
 
 //Database config
-const dB = process.env.MONGO_URI || require('./config/keys').mongoURI;
+const dB = process.env.MONGO_URI;
 
 //EJS
 app.use(expressLayouts);
