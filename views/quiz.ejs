@@ -4,16 +4,16 @@
             <div class="card-header text-center">
                 <h2>Online Quiz</h2>
                 <div class="progress mt-3">
-                    <div class="progress-bar" role="progressbar" style="width: 0%;" id="progressBar"></div>
+                    <div class="progress-bar bg-info" role="progressbar" style="width: 0%;" id="progressBar"></div>
                 </div>
             </div>
             <div class="card-body">
                 <h2 class="question">Question </h2>
                 <div class="choice-container">
-                    <div><button class="btn btn-primary choices unselected" id="choice-1">A</button></div>
-                    <div><button class="btn btn-primary choices unselected" id="choice-2">B</button></div>
-                    <div><button class="btn btn-primary choices unselected" id="choice-3">C</button></div>
-                    <div><button class="btn btn-primary choices unselected" id="choice-4">D</button></div>
+                    <div>A.<button class="btn btn-primary choices unselected" id="choice-1"></button></div>
+                    <div>B.<button class="btn btn-primary choices unselected" id="choice-2"></button></div>
+                    <div>C.<button class="btn btn-primary choices unselected" id="choice-3"></button></div>
+                    <div>D.<button class="btn btn-primary choices unselected" id="choice-4"></button></div>
                 </div>
                 <div class="result"></div>
                 <div></div>
@@ -48,7 +48,7 @@ let userChoice = [];
 const showQuestion = () => {
     let question = questions[currentQuestion]; 
     console.log(question)
-    document.querySelector('.question').innerHTML = `Q${currentQuestion+1}: ` + question[0]; 
+    document.querySelector('.question').innerHTML = `Q.${currentQuestion+1}. ` + question[0]; 
     document.querySelectorAll('.choices').forEach((e, ind)=>{
         e.innerHTML = question[ind+1]; 
     });
