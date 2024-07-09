@@ -8,6 +8,7 @@ const flash = require('connect-flash');
 const bcrypt = require('bcryptjs');
 const passport = require('passport'); 
 const app = express(); 
+require('dotenv').config(); 
 
 //Load User model
 const User = require('./models/User'); 
@@ -19,7 +20,7 @@ const {forwardAuthenticated, ensureAuthenticated} = require('./config/auth')
 require('./config/passport')(passport);
 
 //Database config
-const dB = require('./config/keys').mongoURI;
+const dB = process.env.MONGO_URI || require('./config/keys').mongoURI;
 
 //EJS
 app.use(expressLayouts);
